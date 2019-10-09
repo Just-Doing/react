@@ -43,7 +43,7 @@ if (enableSchedulerTracing) {
   );
 }
 
-export opaque type ReactPriorityLevel = 99 | 98 | 97 | 96 | 95 | 90;
+export type ReactPriorityLevel = 99 | 98 | 97 | 96 | 95 | 90;
 export type SchedulerCallback = (isSync: boolean) => SchedulerCallback | null;
 
 type SchedulerCallbackOptions = {
@@ -65,7 +65,7 @@ export const NoPriority: ReactPriorityLevel = 90;
 
 export const shouldYield = Scheduler_shouldYield;
 export const requestPaint =
-  // Fall back gracefully if we're running an older verison of Scheduler.
+  // Fall back gracefully if we're running an older version of Scheduler.
   Scheduler_requestPaint !== undefined ? Scheduler_requestPaint : () => {};
 
 let syncQueue: Array<SchedulerCallback> | null = null;
@@ -160,7 +160,9 @@ export function cancelCallback(callbackNode: mixed) {
 
 export function flushSyncCallbackQueue() {
   if (immediateQueueCallbackNode !== null) {
-    Scheduler_cancelCallback(immediateQueueCallbackNode);
+    const node = immediateQueueCallbackNode;
+    immediateQueueCallbackNode = null;
+    Scheduler_cancelCallback(node);
   }
   flushSyncCallbackQueueImpl();
 }
